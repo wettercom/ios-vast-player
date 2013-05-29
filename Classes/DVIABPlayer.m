@@ -171,8 +171,12 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
                 if (CMTimeCompare(CMTimeAbsoluteValue(self.currentItem.currentTime),
                                   CMTimeMake(1, 1)) == -1) {
                     self.playBreaksQueue = [[self.adPlaylist preRollPlayBreaks] mutableCopy];
-                    [self removeObserver:self forKeyPath:@"rate"
-                                 context:DVIABContentPlayerRateObservationContext];
+                    // http://stackoverflow.com/questions/1582383/how-can-i-tell-if-an-object-has-a-key-value-observer-attached
+                    @try{
+                        [self removeObserver:self forKeyPath:@"rate" context:DVIABContentPlayerRateObservationContext];
+                    }@catch(id anException){
+                        //do nothing, obviously it wasn't attached because an exception was thrown
+                    }
                     [self startPlayBreaksFromQueue];
                 }
             }
