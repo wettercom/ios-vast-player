@@ -143,11 +143,15 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
         dispatch_async(dispatch_get_main_queue(), ^{
             switch (status) {
                 case AVPlayerItemStatusReadyToPlay:
-                    self.playerLayer.player = self.adPlayer;
-                    if (self.currentInlineAd.playMediaFile) {
-                        [self.currentInlineAd trackEvent:@"start"];
+                    VLogF(self.rate);
+                    if (!self.rate) {
+                        self.playerLayer.player = self.adPlayer;
+                        if (self.currentInlineAd.playMediaFile) {
+                            [self.currentInlineAd trackEvent:@"start"];
+                        }
+                        [super pause];
+                        [self.adPlayer play];
                     }
-                    [self.adPlayer play];
                     break;
                     
                 case AVPlayerItemStatusFailed:
@@ -193,6 +197,7 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
             if (rate == 0 && !paused) {
                 VLogV(self.playerLayer);
                 self.playerLayer.player = self.adPlayer;
+                [super pause];
                 [self.adPlayer play];
             }
             paused = NO;
@@ -294,7 +299,8 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
     self.playerLayer.player = self;
     self.adPlayer = nil;
     
-    if (! self.contentPlayerItemDidReachEnd) {
+    if (!self.contentPlayerItemDidReachEnd) {
+        VLogF(self.rate);
         [self play];
     }
 }
@@ -440,7 +446,9 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
 
 - (void)play
 {
-    if (self.adPlayer) {
+    if (self.adPlayer && ![super rate]) {
+        VLogF(self.rate);
+        [super pause];
         [self.adPlayer play];
     } else {
         [super play];
