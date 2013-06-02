@@ -460,8 +460,12 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
     self.adPlayer = nil; // remove observers
     self.adPlaylist = nil; // to remove time observer
     self.contentPlayerItem = nil; // to remove notification observer
-    [self removeObserver:self forKeyPath:@"rate"
-                 context:DVIABContentPlayerRateObservationContext];
+    // http://stackoverflow.com/questions/1582383/how-can-i-tell-if-an-object-has-a-key-value-observer-attached
+    @try{
+        [self removeObserver:self forKeyPath:@"rate" context:DVIABContentPlayerRateObservationContext];
+    }@catch(id anException){
+        //do nothing, obviously it wasn't attached because an exception was thrown
+    }
 }
 
 #pragma mark - Networking
