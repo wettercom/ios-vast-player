@@ -132,10 +132,13 @@
             NSMutableDictionary *innerDictionary = dictionary[event] ? [dictionary[event] mutableCopy] : [NSMutableDictionary dictionary];
             if (!urls.count) {
                 if (!trackingElement.isEmpty) {
-                    VLogV(trackingElement.stringValue);
                     NSString *key = [NSString stringWithFormat:@"url-%d", innerDictionary.allKeys.count];
                     VLogV(key);
-                    innerDictionary[key] = [NSURL URLWithString:trackingElement.stringValue];
+                    VLogV(trackingElement.stringValue);
+                    NSURL *url = [NSURL URLWithString:trackingElement.stringValue];
+                    if (url) {
+                        innerDictionary[key] = url;
+                    }
                 }
             } else {
                 [urls enumerateObjectsUsingBlock:^(DDXMLElement *url, NSUInteger idx, BOOL *stop) {
