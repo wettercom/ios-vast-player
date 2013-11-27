@@ -360,7 +360,7 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
     self.currentInlineAdPlayerItem = playerItem;
     
     self.adPlayer = [[AVPlayer alloc] initWithPlayerItem:playerItem];
-    Float64 duration = CMTimeGetSeconds(playerItem.duration);
+    Float64 duration = CMTimeGetSeconds(playerItem.asset.duration);
 //    VLogF(duration);
     typeof(self) SELF = self;
     self.firstQuartile = self.midpoint = self.thirdQuartile = NO;
@@ -378,7 +378,7 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
             SELF.thirdQuartile = YES;
             [SELF.currentInlineAd trackEvent:@"thirdQuartile"];
         }
-//        VLogF(current);
+        VLogF(current);
     }];
     
     // Other TrackingEvents (Not Implemented)
