@@ -29,6 +29,7 @@ enum {
 
 - (BOOL)player:(DVIABPlayer *)player shouldPauseForAdBreak:(DVVideoPlayBreak *)playBreak;
 - (void)player:(DVIABPlayer *)player didFailPlayBreak:(DVVideoPlayBreak *)playBreak withError:(NSError *)error;
+- (void)player:(DVIABPlayer *)player connectionDidFinishLoadingForBreak:(DVVideoPlayBreak *)playBreak;
 
 @end
 

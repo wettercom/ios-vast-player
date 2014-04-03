@@ -192,7 +192,7 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
         
         float rate = [[change objectForKey:NSKeyValueChangeNewKey] floatValue];
         VLog(@"DVIABPlayerRateObservationContext %@ %f", self.currentItem, rate);
-
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             if (rate == 0 && !paused) {
                 VLogV(self.playerLayer);
@@ -247,7 +247,7 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
         
         __block CMTime previousTime = kCMTimeNegativeInfinity;
         self.periodicTimeObserver = [self addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(AD_PLAY_BREAK_MIN_INTERVAL_BETWEEN, 1) queue:NULL usingBlock:^(CMTime time) {
-//            VLogI((int)time.value);
+            //            VLogI((int)time.value);
             if (player.currentItem == player.contentPlayerItem &&
                 CMTimeCompare(CMTimeMakeWithSeconds(AD_PLAY_BREAK_MIN_INTERVAL_BETWEEN, 1),
                               CMTimeAbsoluteValue(CMTimeSubtract(previousTime, time))) == -1) {
@@ -361,7 +361,7 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
     
     self.adPlayer = [[AVPlayer alloc] initWithPlayerItem:playerItem];
     Float64 duration = CMTimeGetSeconds(playerItem.asset.duration);
-//    VLogF(duration);
+    //    VLogF(duration);
     typeof(self) SELF = self;
     self.firstQuartile = self.midpoint = self.thirdQuartile = NO;
     self.periodicAdTimeObserver = [self.adPlayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, 1) queue:NULL usingBlock:^(CMTime time) {
@@ -415,7 +415,7 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
 - (void)finishCurrentInlineAd:(AVPlayerItem *)playerItem
 {
     VLogV(playerItem);
-
+    
     if (self.currentInlineAd.playMediaFile) {
         [self.currentInlineAd trackEvent:@"complete"];
     }
@@ -475,15 +475,15 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
     VLogV(playBreak);
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:playBreak.adServingTemplateURL
-                                             cachePolicy:NSURLRequestReloadIgnoringCacheData
-                                         timeoutInterval:AD_REQUEST_TIMEOUT_INTERVAL];
+                                                           cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                                       timeoutInterval:AD_REQUEST_TIMEOUT_INTERVAL];
     
     // Set HTTP Headers if any where passed.
     for (NSString *field in _httpHeaders) {
         [request setValue:_httpHeaders[field] forHTTPHeaderField:field];
     }
     
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];    
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     if (! connection) {
         if ([self.delegate respondsToSelector:@selector(player:didFailPlayBreak:withError:)]) {
             NSError *error = [NSError errorWithDomain:DVIABPlayerErrorDomain
@@ -518,7 +518,7 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
     if ([self.delegate respondsToSelector:@selector(player:didFailPlayBreak:withError:)]) {
         [self.delegate player:self didFailPlayBreak:self.currentPlayBreak withError:error];
     }
-
+    
     [self finishCurrentPlayBreak];
 }
 
@@ -571,6 +571,10 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
         // Simply play the inline ad.
         self.adsQueue = [adTemplate.ads mutableCopy];
         [self startAdsFromQueue];
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(player:connectionDidFinishLoadingForBreak:)]) {
+        [self.delegate player:self connectionDidFinishLoadingForBreak:self.currentPlayBreak];
     }
 }
 
