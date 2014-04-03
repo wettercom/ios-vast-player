@@ -572,6 +572,10 @@ NSString *const DVIABPlayerErrorDomain = @"DVIABPlayerErrorDomain";
         self.adsQueue = [adTemplate.ads mutableCopy];
         [self startAdsFromQueue];
     }
+    
+    if ([self.delegate respondsToSelector:@selector(player:connectionDidFinishLoadingForBreak:)]) {
+        [self.delegate player:self connectionDidFinishLoadingForBreak:self.currentPlayBreak];
+    }
 }
 
 @end
