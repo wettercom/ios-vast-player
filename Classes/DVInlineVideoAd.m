@@ -32,9 +32,16 @@
     // Trigger those babies, async of course!
     VLogV(self.impressionURLs);
     DLogI(self.impressionURLs.count);
-    for (NSUInteger index = 0; index < self.impressionURLs.count; index++) {
-        NSURL *url = self.impressionURLs[index];
+    
+    NSMutableArray *objectsToReplace = [NSMutableArray new];
+    
+    [self.impressionURLs enumerateObjectsUsingBlock:^(NSURL *url, NSUInteger idx, BOOL *stop) {
         VLogV(url);
+        
+        [objectsToReplace addObject:url];
+    }];
+    
+    for (NSURL *url in objectsToReplace) {
         [self sendAsynchronousRequest:url context:self.impressionURLs]; // @"trackImpressions"
     }
 }
