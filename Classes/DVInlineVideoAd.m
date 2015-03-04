@@ -31,7 +31,7 @@
 {
     // Trigger those babies, async of course!
     VLogV(self.impressionURLs);
-    DLogI(self.impressionURLs.count);
+    DLogL((long)self.impressionURLs.count);
     
     NSMutableArray *objectsToReplace = [NSMutableArray new];
     
